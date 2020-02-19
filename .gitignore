@@ -13,7 +13,7 @@ teno
 1
 00
  Code Issues 0 Pull requests 0 Actions Projects 0 Wiki Security Insights Settings
-teno/.gitignore
+fta-aks-demo/.gitignore
 @jftl6y jftl6y Initial commit
 d1940a5 11 seconds ago
 350 lines (282 sloc)  5.86 KB
@@ -81,7 +81,8 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
-
+appsettings.Development.json
+local.settings.json
 # StyleCop
 StyleCopReport.xml
 
