@@ -29,14 +29,6 @@ namespace TrivialService.Controllers
             .ToArray();
 
         }
-        /*
-        [HttpGet]
-        public IEnumerable<AuthorNote> Get(string authorName, TimeSpan dateRange, DateTime createDate)
-        {
-            // GET /api/Foo/{authorName}/{dateRange}/{createDate}
-            return null;
-        }
-        */
         [Route("{noteId}")]
         [HttpGet]
         public AuthorNote Get(int noteId)
