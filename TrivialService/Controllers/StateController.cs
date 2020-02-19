@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
-
+using TrivialService;
 
 namespace TrivialService.Controllers
 {
@@ -53,19 +53,5 @@ namespace TrivialService.Controllers
         });
     }
 
-    public class AuthorNote
-    {
-        public Person Author {get;set;}
-        public int NoteId {get;set;}
-        public DateTime CreateDate {get;set;}
-        public DateTime ModifyDate {get;set;}
-        public string NoteContent {get;set;}
-    
-    }
-    public class Person
-    {
-        public string FirstName {get;set;}
-        public string LastName {get;set;}
-        public string EmailAddress {get;set;}
-    }
+  
 }
