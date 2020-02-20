@@ -17,4 +17,14 @@ namespace TrivialService
         public string LastName {get;set;}
         public string EmailAddress {get;set;}
     }
+
+
+    public class AppSettings
+    {
+        public string CacheConnection { get; set; }
+
+        public string StateServiceBaseURL { get; set; }
+
+        public string DataServiceBaseURL { get; set; }
+    }
 }

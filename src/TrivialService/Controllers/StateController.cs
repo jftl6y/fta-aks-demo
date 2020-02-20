@@ -8,7 +8,7 @@ using StackExchange.Redis;
 using TrivialService;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-
+using Microsoft.Extensions.Options;
 
 namespace TrivialService.Controllers
 {
@@ -16,19 +16,34 @@ namespace TrivialService.Controllers
     [Route("[controller]")]
     public class StateController : ControllerBase
     {
+        private AppSettings _settings;
         ConnectionMultiplexer Connection { get { return lazyConnection.Value; } }
-        [HttpGet]
-        public IEnumerable<AuthorNote> Get()
-        {
-            //todo 
-        //    IDatabase cache = Connection.GetDatabase();
-        
-            var rng = new Random();
-            return Enumerable.Range(1, rng.Next(1, 10)).Select(index => CreateDemoNote(rng.Next(1, 10))
-            )
-            .ToArray();
+        private Lazy<ConnectionMultiplexer> lazyConnection;
 
+        public StateController(IOptions<AppSettings> settings)
+        {
+            _settings = settings.Value;
+
+            lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
+             {
+                 string cacheConnection = _settings.CacheConnection;
+                 return ConnectionMultiplexer.Connect(cacheConnection);
+             });
         }
+
+
+        [HttpGet]
+        //public IEnumerable<AuthorNote> Get()
+        //{
+        //    //todo 
+        //    IDatabase cache = Connection.GetDatabase();
+        //    cache.
+        //    var rng = new Random();
+        //    return Enumerable.Range(1, rng.Next(1, 10)).Select(index => CreateDemoNote(rng.Next(1, 10))
+        //    )
+        //    .ToArray();
+
+        //}
         /*
         [HttpGet]
         public IEnumerable<AuthorNote> Get(string authorName, TimeSpan dateRange, DateTime createDate)
@@ -39,13 +54,34 @@ namespace TrivialService.Controllers
         */
         [Route("{noteId}")]
         [HttpGet]
-        public AuthorNote Get(int noteId)
+        public ActionResult<AuthorNote> Get(int noteId)
         {
             IDatabase cache = Connection.GetDatabase();
-            var noteJson = cache.StringGet(noteId.ToString(),CommandFlags.None).ToString();
-            if (!String.IsNullOrEmpty(noteJson))
-                return JsonConvert.DeserializeObject<AuthorNote>(noteJson);
-            return new AuthorNote();
+            if (cache.KeyExists(noteId.ToString()))
+            {
+                var noteJson = cache.StringGet(noteId.ToString(), CommandFlags.None).ToString();
+                return Ok(JsonConvert.DeserializeObject<AuthorNote>(noteJson));
+            }
+            else
+            {
+                return NotFound($"Note with id {noteId} wasn't found.");
+            }
+        }
+
+        [HttpGet]
+        [Route("load")]
+        public ActionResult<IEnumerable<AuthorNote>> Load()
+        {
+            List<AuthorNote> notes = new List<AuthorNote>();
+
+            //Loads the cache with dummy records
+            for (int i = 0; i < 20; i++)
+            {
+                AuthorNote curNote = CreateDemoNote(i + 1);
+                notes.Add(curNote);
+                Set(curNote);
+            }
+            return notes;
         }
 
         [HttpPost]
@@ -54,26 +90,25 @@ namespace TrivialService.Controllers
             IDatabase cache = Connection.GetDatabase();
             cache.StringSet(note.NoteId.ToString(), JsonConvert.SerializeObject(note));
         }
-        
+
         [HttpPatch]
         public void Update(AuthorNote note)
         {
             Set(note);
         }
+
         [Route("{noteId}")]
         [HttpDelete]
         public void Invalidate(int noteId)
         {
             IDatabase cache = Connection.GetDatabase();
-            cache.KeyDelete(noteId.ToString(),CommandFlags.None);
+            cache.KeyDelete(noteId.ToString(), CommandFlags.None);
         }
-        private Lazy<ConnectionMultiplexer> lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
-        {
-            string redisConxString = "fta-aks-demo.redis.cache.windows.net:6380,password=qh2+NOcmSKX22kDRv+ta37Vx9iXfJjdaEkMYUQTVgQY=,ssl=True,abortConnect=False";
-            string cacheConnection = redisConxString;
 
-            return ConnectionMultiplexer.Connect(cacheConnection);
-        });
+
+
+
+
         private AuthorNote CreateDemoNote(int noteId)
         {
             return new AuthorNote
