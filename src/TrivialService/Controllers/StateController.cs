@@ -17,18 +17,23 @@ namespace TrivialService.Controllers
     public class StateController : ControllerBase
     {
         private AppSettings _settings;
+        private static string _cacheConn;
         ConnectionMultiplexer Connection { get { return lazyConnection.Value; } }
-        private Lazy<ConnectionMultiplexer> lazyConnection;
+        private Lazy<ConnectionMultiplexer> lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
+        {
+            return ConnectionMultiplexer.Connect(_cacheConn);
+        });
 
         public StateController(IOptions<AppSettings> settings)
         {
             _settings = settings.Value;
 
-            lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
-             {
-                 string cacheConnection = _settings.CacheConnection;
-                 return ConnectionMultiplexer.Connect(cacheConnection);
-             });
+            _cacheConn = _settings.CacheConnection;
+            //lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
+            // {
+            //     string cacheConnection = _settings.CacheConnection;
+            //     return ConnectionMultiplexer.Connect(cacheConnection);
+            // });
         }
 
 
@@ -73,7 +78,7 @@ namespace TrivialService.Controllers
             List<AuthorNote> notes = new List<AuthorNote>();
 
             //Loads the cache with dummy records
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 200; i++)
             {
                 Invalidate(i);
             }
