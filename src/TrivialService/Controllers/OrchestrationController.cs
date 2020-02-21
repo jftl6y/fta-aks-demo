@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -41,9 +42,13 @@ namespace TrivialService.Controllers
         [Route("create")]
         public async Task<ActionResult<AuthorNote>> CreateNote([FromBody]AuthorNote note)
         {
-            //Create new note attached to current user
-            return Ok();
-            // return CreatedAtAction(nameof(GetById), new { id = note.NoteId, note });
+            //Submit note to the DB and cache
+            //SaveNoteToDB(note);
+            var result = SaveNoteToCache(note);
+            int noteId;
+            int.TryParse(result.ToString(), out noteId);
+
+            return CreatedAtAction(nameof(GetById), new { id = noteId }, note);
         }
 
 
@@ -77,7 +82,6 @@ namespace TrivialService.Controllers
             {
                 //var response = await client.GetAsync(new Uri(_clientBaseUrl + userId + "?requestID=" + requestId + "&passwordHash=" + hmacString));
                 var response = await client.GetAsync(new Uri(_settings.StateServiceBaseURL + '/' + id));
-                
 
                 // Raise exception if retrieval failed
                 try
@@ -92,6 +96,23 @@ namespace TrivialService.Controllers
                 // On success, return AuthorNote results from the server response packet
                 var responseContent = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<AuthorNote>(responseContent);
+            };
+        }
+        private async Task<ActionResult<int>> SaveNoteToCache(AuthorNote note)
+        {
+            int returned;
+
+            using (var client = new HttpClient())
+            {
+                StringContent content = new StringContent(JsonConvert.SerializeObject(note), Encoding.UTF8, "application/json");
+
+                using (var response = await client.PostAsync(_settings.StateServiceBaseURL, content))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    int.TryParse(apiResponse, out returned); 
+                }
+                // On success, return AuthorNote id results from the server response packet
+                return Ok(returned);
             };
 
         }

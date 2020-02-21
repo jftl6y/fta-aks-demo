@@ -81,10 +81,11 @@ namespace TrivialService.Controllers
         }
 
         [HttpPost]
-        public void Set(AuthorNote note)
+        public ActionResult<int> Set(AuthorNote note)
         {
             IDatabase cache = Connection.GetDatabase();
             cache.StringSet(note.NoteId.ToString(), JsonConvert.SerializeObject(note));
+            return Ok(note.NoteId);
         }
 
         [HttpPatch]
