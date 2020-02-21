@@ -66,6 +66,20 @@ namespace TrivialService.Controllers
             return notes;
         }
 
+        [HttpGet]
+        [Route("clean")]
+        public ActionResult Clean()
+        {
+            List<AuthorNote> notes = new List<AuthorNote>();
+
+            //Loads the cache with dummy records
+            for (int i = 0; i < 20; i++)
+            {
+                Invalidate(i);
+            }
+            return Ok();
+        }
+
         [HttpPost]
         public void Set(AuthorNote note)
         {

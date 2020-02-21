@@ -22,9 +22,7 @@ namespace TrivialService
     public class AppSettings
     {
         public string CacheConnection { get; set; }
-
         public string StateServiceBaseURL { get; set; }
-
         public string DataServiceBaseURL { get; set; }
     }
 }
