@@ -32,18 +32,8 @@ namespace TrivialService.Controllers
         }
 
 
-        [HttpGet]
-        //public IEnumerable<AuthorNote> Get()
-        //{
-        //    //todo 
-        //    IDatabase cache = Connection.GetDatabase();
-        //    cache.
-        //    var rng = new Random();
-        //    return Enumerable.Range(1, rng.Next(1, 10)).Select(index => CreateDemoNote(rng.Next(1, 10))
-        //    )
-        //    .ToArray();
-
-        }
+ 
+        
         [Route("{noteId}")]
         [HttpGet]
         public ActionResult<AuthorNote> Get(int noteId)
