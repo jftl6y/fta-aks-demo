@@ -10,11 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using StackExchange.Redis;
-using TrivialService;
+using aks_demo.Shared;
 
 
-namespace TrivialService.Controllers
+namespace aks_demo.OrchestrationService
 {
     [ApiController]
     [Route("api/notes")]

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
-using TrivialService;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.Options;
+using aks_demo.Shared;
 
-namespace TrivialService.Controllers
+namespace aks_demo.StateService
 {
     [ApiController]
     [Route("[controller]")]

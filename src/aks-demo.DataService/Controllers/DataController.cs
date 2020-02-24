@@ -4,11 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using StackExchange.Redis;
-using TrivialService;
+using Newtonsoft.Json;
 
-
-namespace TrivialService.Controllers
+namespace aks_demo.DataService
 {
     [ApiController]
     public class DataController : ControllerBase
