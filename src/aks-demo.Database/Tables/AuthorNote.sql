@@ -3,7 +3,7 @@
 	[personId] [int] NOT NULL,
 	[createDate] [datetime] NOT NULL DEFAULT getutcDate(),
 	[modifyDate] [datetime] NOT NULL DEFAULT getutcDate(),
-	[NoteContent] [varchar](max) NULL,
+	[noteContent] [varchar](max) NULL,
  CONSTRAINT [PK_AuthorNote] PRIMARY KEY CLUSTERED 
 (
 	[noteId] ASC

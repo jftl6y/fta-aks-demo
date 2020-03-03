@@ -67,4 +67,7 @@
     <Build Include="StoredProcedures\spGetPersonDetails.sql" />
     <Build Include="StoredProcedures\spUpsertAuthorNote.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="aks-demo.Database.refactorlog" />
+  </ItemGroup>
 </Project>
